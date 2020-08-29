@@ -4,4 +4,6 @@
 #include <stdio.h>
 #include "node.h"
 struct node *merge(struct node *first, struct node *second);
+
 #endif
+

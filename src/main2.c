@@ -6,7 +6,7 @@ int main(int argc, char* argv[])
 	struct node *queue = NULL;
 	FILE *fl = NULL;
 	char ch = 0x0;
-	struct node *res = NULL;
+	struct node *huffman_tree = NULL;
 
 	if(argc < 2)
 	{
@@ -22,15 +22,17 @@ int main(int argc, char* argv[])
 	{
 		add_symbol(ch, &queue);
 	}
-	//TODO: тут ошибка.
 	while(queue != NULL)
 	{
 		struct node *tmp1 = get_min_symbol(&queue);
 		struct node *tmp2 = get_min_symbol(&queue);
-		res = merge(tmp1, tmp2);
+		huffman_tree = merge(tmp1, tmp2);
 		//Добавляем ноду без символа в очередь.
-		q_add_node(res, &queue);
+		q_add_node(huffman_tree, &queue);
 	}
-	fclose(fl);
+	if(fl != NULL)
+	{
+		fclose(fl);
+	}
 	return 0;
 }

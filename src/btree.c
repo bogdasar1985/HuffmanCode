@@ -14,6 +14,6 @@ struct node *merge(struct node *first, struct node *second)
 	}
 	res->counter = first->counter + second->counter;
 	res->symbol = -1;
-
 	return res;
 }
+
