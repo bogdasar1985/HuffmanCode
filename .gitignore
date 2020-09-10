@@ -1,3 +1,5 @@
 *.h.gch
 *.o
 main
+main.c
+main2.c
