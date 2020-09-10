@@ -3,11 +3,11 @@
 //	1. Каждый элемент очереди, уже по сути, является деревом с одной нодой.
 //	2. Далее, нам надо лишь производить слияние деревьев, пока все не срастутся в одно.
 #include <stdio.h>
-#include "priority_queue.h"
+#include "heap.h"
 int main(int argc, char *argv[])
 {
-	struct node *queue = NULL;
-	struct node *tmp = NULL;
+	struct node tmp;
+	struct heap *queue = NULL;
 	FILE *fl = NULL;
 	char ch = 0x0;
 
@@ -22,19 +22,22 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Wrong file name!\n");
 		return -2;
 	}
+	
+	init_heap(&queue);
 
 	while((fread(&ch, 1, 1, fl)) != 0)
 	{
-		add_symbol(ch, &queue);
+		insert(&queue, ch);
 	}
 
 	//Высвобождение ресурсов.
-	while(queue != NULL)
+	while(queue->size != 0)
 	{
-		tmp = get_min_symbol(&queue);
-		printf("%c : %lld\n", tmp->symbol, tmp->counter);
-		free(tmp);
+		tmp = extract_min(&queue);
+		printf("%c : %lld\n", tmp.symbol, tmp.frequency);
 	}
+	free(queue->array);
+	free(queue);
 	fclose(fl);
 	return 0;
 }

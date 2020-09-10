@@ -2,10 +2,9 @@
 #define NODE
 struct node
 {
-	unsigned long long counter;
-	struct node *next;
-	struct node *left;
-	struct node *right;
-	char symbol;
+    unsigned long long frequency;
+    char symbol;
 };
+
+void node_swap(struct node *first, struct node *second);
 #endif
