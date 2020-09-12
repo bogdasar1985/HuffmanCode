@@ -4,7 +4,6 @@
 #define PRIORITY_QUEUE
 #include <stdlib.h>
 #include "node.h"
-
 struct heap
 {
     struct node *array;

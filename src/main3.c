@@ -1,51 +1,46 @@
 #include "heap.h"
 #include "btree.h"
 #include <stdio.h>
-int main()
+#include <string.h>
+int main(int argc, char *argv[])
 {
     struct heap *heap = NULL;
     struct tree *tree = NULL;
-    init_heap(&heap);
-    for(size_t i = 0; i < 5;  i++)
-    {
-        insert(&heap, 'a');
-    }
-    for(size_t i = 0; i < 2;  i++)
-    {
-        insert(&heap, 'b');
-    }
-    for(size_t i = 0; i < 8;  i++)
-    {
-        insert(&heap, 'c');
-    }
-    for(size_t i = 0; i < 16;  i++)
-    {
-        insert(&heap, 'x');
-    }
-    for(size_t i = 0; i < 1;  i++)
-    {
-        insert(&heap, 'd');
-    }
-    for(size_t i = 0; i < 6;  i++)
-    {
-        insert(&heap, 'q');
-    }
-    for(size_t i = 0; i < 26;  i++)
-    {
-        insert(&heap, 's');
-    }
-    for(size_t i = 0; i < 6;  i++)
-    {
-        insert(&heap, 'q');
-    }
-    
-    init_tree(&heap, &tree); //Вроде работает. Дерево с конца читать.
+    FILE* fl = NULL;
+    char ch = 0x0;
+    char buf[BUFSIZ];
 
-    for(size_t i = tree->size - 1; i > 0; i--)
+    if(argc < 2)
     {
-        printf("%lld %c\n", tree->array[i].frequency, tree->array[i].symbol);
+        fprintf(stderr, "There are no file name!\n");
+        return -1;
     }
+    if((fl = fopen(argv[1], "r")) == NULL)
+    {
+        fprintf(stderr, "Wrong file name or program just can't open it!\n");
+        return -2;
+    }
+
+    init_heap(&heap);
     
+    while(fread(&ch, 1, 1, fl) != 0)
+    {
+        insert(&heap, ch);
+    }
+    fclose(fl);
+
+    init_tree(&heap, &tree); //Вроде работает. Дерево с конца читать.
+    
+    for(size_t i = 0; i < tree->size ; ++i)
+    {
+        if(tree->array[i].symbol != -1)
+        {
+            get_code(NULL, i, buf);
+            printf("%c %s\n", tree->array[i].symbol, buf);
+            memset(buf, '\0', BUFSIZ);
+        }
+    }
+
     free(tree->array);
     free(tree);
     free(heap->array);

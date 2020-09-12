@@ -47,7 +47,7 @@ struct node extract_min(struct heap **heap)
 
 void insert(struct heap **heap, char symbol)
 {
-	for(size_t i = 0; i < (*heap)->size; i++)
+	for(size_t i = 0; i < (*heap)->size; ++i)
 	{
 		if((*heap)->array[i].symbol == symbol)
 		{
