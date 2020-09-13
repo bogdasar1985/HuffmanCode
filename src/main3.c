@@ -1,4 +1,3 @@
-#include "heap.h"
 #include "btree.h"
 #include <stdio.h>
 #include <string.h>
