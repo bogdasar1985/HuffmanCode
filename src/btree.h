@@ -2,7 +2,7 @@
 #define BTREE
 #include <stdlib.h>
 #include <string.h>
-#include "heap.h"
+#include "node.h"
 // Это определение структуры. Хули оно тут делает?
 // Нельзя так блять! Нарушение инкапсуляции.
 // Устранив это, мы сможем усранить зависимость дерева от кучи.
@@ -19,9 +19,9 @@ struct tree
     size_t size;
 };
 
-void init_tree(struct heap **queue, struct tree **tree);
+void init_tree(struct tree **tree, size_t size);
 
-void char_swap(char *first, char *second);
+//void char_swap(char *first, char *second);
 
-void get_code(struct tree *queue, size_t index, char *result);
+//void get_code(struct tree *queue, size_t index, char *result);
 #endif

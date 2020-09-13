@@ -1,4 +1,4 @@
-#include "btree.h"
+#include "huffman.h"
 #include <stdio.h>
 #include <string.h>
 int main(int argc, char *argv[])
@@ -28,8 +28,9 @@ int main(int argc, char *argv[])
     }
     fclose(fl);
 
-    init_tree(&heap, &tree); //Вроде работает. Дерево с конца читать.
-    
+    init_tree(&tree, (heap->size) + (heap->size) + 1); //Вроде работает. Дерево с конца читать.
+    fill_tree(&tree, &heap);
+
     for(size_t i = 0; i < tree->size ; ++i)
     {
         if(tree->array[i].symbol != -1)

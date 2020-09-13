@@ -1,15 +1,19 @@
 #include "btree.h"
-// Что делает этот метод:
+// Что дела(ет/л) этот метод:
 // 1. Извлекает минимальные элементы и кладёт их в массив в порядке увеличения
 // 2. Достраивает дерево, ввиде массива, складывая элементы и засосывая получившееся значение в конец
 // 3. Переворачивает массив, чтобы дерево было корректным.
 // Тут напрашивается очервидная оптимизация, но мы сейчас меняем архитектуру, так что нет.
-void init_tree(struct heap **queue, struct tree **tree)
+// Задача данной функции, лишь дать нам память.
+void init_tree(struct tree **tree, size_t size)
 {
 	(*tree) = malloc(sizeof(struct tree));
-	(*tree)->array = calloc((*queue)->size + ((*queue)->size - 1), sizeof(struct node));
+	(*tree)->array = calloc(size, sizeof(struct node));
+	(*tree)->size = 0;
+	(*tree)->capacity = size;
+	/**
+	(*tree)->array = calloc(size + size - 1, sizeof(struct node));	//????
 	size_t size_tmp = (*queue)->size;	//Данное значение меняется после exctract_min
-
 	size_t i = 0;
 	while((*queue)->size != 0)
 	{
@@ -37,34 +41,5 @@ void init_tree(struct heap **queue, struct tree **tree)
 	{
 		node_swap(&((*tree)->array[i]), &((*tree)->array[(*tree)->size-1-i]));
 	}
-}
-
-void char_swap(char *first, char *second)
-{
-	char tmp = *first;
-	*first = *second;
-	*second = tmp;
-}
-
-void get_code(struct tree *queue, size_t index, char *result)	// Тут не нужен queue. LOL. Ну может только для обработки ошибок.
-{
-	size_t j = 0;
-	while (index != 0)
-	{
-		if(index % 2 == 0)
-		{
-			*(result + j) = '1';
-		}
-		if(index % 2 != 0)
-		{
-			*(result + j) = '0';
-		}
-		j++;
-		index = (index - 1) / 2;
-	}
-
-	for(int i = 0; i < (int)strlen(result) / 2; i++)
-	{
-		char_swap((result+i), (result+strlen(result)-i-1));
-	}
+	*/
 }
