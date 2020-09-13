@@ -1,4 +1,5 @@
 #include "huffman.h"
+//Этот метод можно изменить и не нуждаться в перевороте в конце
 void fill_tree(struct tree **tree, struct heap **queue)
 {
     size_t i = 0;
@@ -54,7 +55,7 @@ void get_code(struct tree *queue, size_t index, char *result)	// Тут не н�
 		index = (index - 1) / 2;
 	}
 
-	for(int i = 0; i < (int)strlen(result) / 2; i++)
+    for(int i = 0; i < (int)strlen(result) / 2; ++i)
 	{
 		char_swap((result+i), (result+strlen(result)-i-1));
 	}
