@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "node.h"
-// Это определение структуры. Хули оно тут делает?
-// Нельзя так блять! Нарушение инкапсуляции.
 struct tree
 {
     struct node *array;
