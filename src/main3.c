@@ -26,21 +26,21 @@ int main(int argc, char *argv[])
     {
         insert(&heap, ch);
     }
-    fclose(fl);
 
     init_tree(&tree, (heap->size) + (heap->size) + 1); //Вроде работает. Дерево с конца читать.
-    fill_tree(&tree, &heap);
-
-    for(size_t i = 0; i < tree->size ; ++i)
+    fill_tree(&tree, &heap);    //Создаём дерево
+    
+    for(size_t i = 0; i < tree->size; ++i)
     {
         if(tree->array[i].symbol != -1)
         {
-            get_code(NULL, i, buf);
-            printf("%c %s\n", tree->array[i].symbol, buf);
+            get_code(tree, tree->array[i].symbol, buf);
+            printf("%c : %s\n", tree->array[i].symbol, buf);
             memset(buf, '\0', BUFSIZ);
         }
     }
 
+    fclose(fl);
     free(tree->array);
     free(tree);
     free(heap->array);
