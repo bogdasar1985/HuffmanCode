@@ -7,7 +7,10 @@ int main(int argc, char *argv[])
     struct tree *tree = NULL;
     FILE* fl = NULL;
     char ch = 0x0;
+    char wr_ch = 0x0;
     char buf[BUFSIZ];
+    size_t bit_counter = 0;  // Сколько бит записано.
+    size_t bit_position = 7; // Первый бит байта, если читать слева.
 
     if(argc < 2)
     {
@@ -30,14 +33,33 @@ int main(int argc, char *argv[])
     init_tree(&tree, (heap->size) + (heap->size) + 1); //Вроде работает. Дерево с конца читать.
     fill_tree(&tree, &heap);    //Создаём дерево
     
-    for(size_t i = 0; i < tree->size; ++i)
+    fseek(fl, 0, SEEK_SET);     //Ставим на позицию старта файла.
+    
+    // Обработать пограничные ситуации.
+    while(fread(&ch, 1, 1, fl) != 0)
     {
-        if(tree->array[i].symbol != -1)
+        get_code(tree, ch, buf);
+        for(size_t i = 0; i < strlen(buf); ++i)
         {
-            get_code(tree, tree->array[i].symbol, buf);
-            printf("%c : %s\n", tree->array[i].symbol, buf);
-            memset(buf, '\0', BUFSIZ);
+            if(bit_counter == 7)
+            {
+                printf("%c", wr_ch);    //TODO: Заменить на ввод в файл.
+                bit_position = 7;
+                bit_counter = 0;
+                wr_ch = 0x0;
+            }
+            if(buf[i] == '0')
+            {
+                wr_ch &= ~(1UL << bit_position);
+            }
+            if(buf[i] == '1')
+            {
+                wr_ch |= 1UL << bit_position;
+            }
+            ++bit_counter;
+            --bit_position;
         }
+        memset(buf, '\0', BUFSIZ);
     }
 
     fclose(fl);
