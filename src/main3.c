@@ -36,6 +36,9 @@ int main(int argc, char *argv[])
     fseek(fl, 0, SEEK_SET);
     
     // Обработать пограничные ситуации.
+    // 1. Ситуация, записи последнего символа:
+    // 1.1 Посчитать разницу между 8 и длиной кода символа.
+    //     Записать эту информацию в начало файла.
     while(fread(&ch, 1, 1, fl) != 0)
     {
         get_code(tree, ch, buf);
@@ -61,6 +64,31 @@ int main(int argc, char *argv[])
         }
         memset(buf, '\0', BUFSIZ);
     }
+
+    // ЭТО ВСЁ ПСЕВДОКОД!
+    // Вот тут дописываем оставшиеся биты
+    if(bit_counter > 0)
+    {
+        printf("%c", wr_ch);
+    }
+
+    // Переходим в начало файла
+
+    // Тут пишем кол-во лишних бит (1 байт)
+    if(bit_counter == 0)
+    {
+        printf("%ld", bit_counter);
+    }
+    else
+    {
+        printf("%ld", 8 - bit_counter);
+    }
+    
+    // Пишем длину дерева в файл (3 байта)
+    printf("%ld", tree->size);
+
+    // Спомощью специальной функции, записываем дерево в файл
+    // huffman_write
 
     fclose(fl);
     free(tree->array);
