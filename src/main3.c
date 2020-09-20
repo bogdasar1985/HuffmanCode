@@ -30,10 +30,10 @@ int main(int argc, char *argv[])
         insert(&heap, ch);
     }
 
-    init_tree(&tree, (heap->size) + (heap->size) + 1); //Вроде работает. Дерево с конца читать.
-    fill_tree(&tree, &heap);    //Создаём дерево
+    init_tree(&tree, (heap->size) + (heap->size) + 1);
+    fill_tree(&tree, &heap);
     
-    fseek(fl, 0, SEEK_SET);     //Ставим на позицию старта файла.
+    fseek(fl, 0, SEEK_SET);
     
     // Обработать пограничные ситуации.
     while(fread(&ch, 1, 1, fl) != 0)
@@ -41,13 +41,6 @@ int main(int argc, char *argv[])
         get_code(tree, ch, buf);
         for(size_t i = 0; i < strlen(buf); ++i)
         {
-            if(bit_counter == 7)
-            {
-                printf("%c", wr_ch);    //TODO: Заменить на ввод в файл.
-                bit_position = 7;
-                bit_counter = 0;
-                wr_ch = 0x0;
-            }
             if(buf[i] == '0')
             {
                 wr_ch &= ~(1UL << bit_position);
@@ -58,6 +51,13 @@ int main(int argc, char *argv[])
             }
             ++bit_counter;
             --bit_position;
+            if(bit_counter == 8)
+            {
+                printf("%c", wr_ch);    //TODO: Заменить на ввод в файл.
+                bit_position = 7;
+                bit_counter = 0;
+                wr_ch = 0x0;
+            }
         }
         memset(buf, '\0', BUFSIZ);
     }

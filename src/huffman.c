@@ -38,7 +38,7 @@ void char_swap(char *first, char *second)
 	*second = tmp;
 }
 
-void get_code(struct tree *queue, char symbol, char *result)	// Тут не нужен queue. LOL. Ну может только для обработки ошибок.
+void get_code(struct tree *queue, char symbol, char *result)
 {
 	size_t index = 0;
 	for(size_t i = 0; i < queue->size; ++i)
