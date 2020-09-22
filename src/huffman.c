@@ -70,3 +70,17 @@ void get_code(struct tree *queue, char symbol, char *result)
 		char_swap((result+i), (result+strlen(result)-i-1));
 	}
 }
+
+int dict_write(struct tree *tree, FILE* fl)
+{
+	for(int i = 0; i < tree->size; ++i)
+	{
+		if(tree->array[i].symbol != -1)
+		{
+			char buf[BUFSIZ];
+			int size = sprintf(buf, "%c%lld ", tree->array[i].symbol, tree->array[i].frequency);
+			fwrite(buf, size, 1, fl);
+		}
+	}
+	return 0;
+}
