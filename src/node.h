@@ -2,7 +2,7 @@
 #define NODE
 struct node
 {
-    unsigned long long frequency;
+    unsigned int frequency;
     char symbol;
 };
 

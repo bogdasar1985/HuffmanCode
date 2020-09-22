@@ -44,11 +44,7 @@ int main(int argc, char *argv[])
     fill_tree(&tree, &heap);
     
     fseek(fl, 0, SEEK_SET);
-    
-    // Обработать пограничные ситуации.
-    // 1. Ситуация, записи последнего символа:
-    // 1.1 Посчитать разницу между 8 и длиной кода символа.
-    //     Записать эту информацию в начало файла.
+
     while(fread(&ch, 1, 1, fl) != 0)
     {
         get_code(tree, ch, buf);
@@ -66,7 +62,7 @@ int main(int argc, char *argv[])
             --bit_position;
             if(bit_counter == 8)
             {
-                fwrite(&wr_ch, 1, 1, comp_fl);    //TODO: Заменить на ввод в файл.
+                fwrite(&wr_ch, 1, 1, comp_fl);
                 bit_position = 7;
                 bit_counter = 0;
                 wr_ch = 0x0;
@@ -75,7 +71,6 @@ int main(int argc, char *argv[])
         memset(buf, '\0', BUFSIZ);
     }
 
-    // ЭТО ВСЁ ПСЕВДОКОД!
     // Вот тут дописываем оставшиеся биты
     if(bit_counter > 0)
     {

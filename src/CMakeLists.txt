@@ -14,6 +14,6 @@ add_library(btree SHARED btree.h btree.c)
 
 add_library(huffman SHARED huffman.h huffman.c)
 
-add_executable(main main3.c)
+add_executable(coder coder.c)
 
-target_link_libraries(main heap btree huffman utilities)
+target_link_libraries(coder heap btree huffman utilities)

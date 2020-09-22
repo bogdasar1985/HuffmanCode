@@ -77,9 +77,10 @@ int dict_write(struct tree *tree, FILE* fl)
 	{
 		if(tree->array[i].symbol != -1)
 		{
-			char buf[BUFSIZ];
-			int size = sprintf(buf, "%c%lld ", tree->array[i].symbol, tree->array[i].frequency);
-			fwrite(buf, size, 1, fl);
+			//char buf[BUFSIZ];
+			//int size = sprintf(buf, "%c%d ", tree->array[i].symbol, tree->array[i].frequency);
+			fwrite(&(tree->array[i].symbol), 1, 1, fl);
+			fwrite(&(tree->array[i].frequency), 4, 1, fl);
 		}
 	}
 	return 0;
