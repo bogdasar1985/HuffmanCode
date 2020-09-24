@@ -16,4 +16,8 @@ add_library(huffman SHARED huffman.h huffman.c)
 
 add_executable(coder coder.c)
 
+add_executable(decoder decoder.c node.h node.c heap.h heap.c)
+
 target_link_libraries(coder heap btree huffman utilities)
+
+target_link_libraries(decoder btree huffman utilities)

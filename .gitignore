@@ -1,6 +1,7 @@
 *.h.gch
 *.o
 *.so
+decoder
 coder
 main
 cmake_install.cmake

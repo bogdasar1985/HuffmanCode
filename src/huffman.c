@@ -75,13 +75,21 @@ int dict_write(struct tree *tree, FILE* fl)
 {
 	for(int i = 0; i < tree->size; ++i)
 	{
-		if(tree->array[i].symbol != -1)
-		{
-			//char buf[BUFSIZ];
-			//int size = sprintf(buf, "%c%d ", tree->array[i].symbol, tree->array[i].frequency);
-			fwrite(&(tree->array[i].symbol), 1, 1, fl);
-			fwrite(&(tree->array[i].frequency), 4, 1, fl);
-		}
+		//Сейчас, он добавляет всё дерево, включая ноды без символов.
+		fwrite(&(tree->array[i].symbol), sizeof(tree->array[i].symbol), 1, fl);
+		fwrite(&(tree->array[i].frequency), sizeof(tree->array[i].frequency), 1, fl);
 	}
 	return 0;
+}
+
+void insert_ready_node(struct tree **tree, struct node node)
+{	
+	if((*tree)->size == (*tree)->capacity)
+	{
+		(*tree)->array = reallocarray((*tree)->array, (*tree)->size * 2, sizeof(struct node));
+		(*tree)->capacity = (*tree)->capacity * 2;
+	}
+	(*tree)->size++;
+	(*tree)->array[(*tree)->size - 1].symbol = node.symbol;
+	(*tree)->array[(*tree)->size - 1].frequency = node.frequency;
 }

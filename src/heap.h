@@ -5,8 +5,8 @@
 struct heap
 {
     struct node *array;
-    size_t capacity;
-    size_t size;
+    unsigned int capacity;
+    unsigned int size;
 };
 
 void init_heap(struct heap **heap);

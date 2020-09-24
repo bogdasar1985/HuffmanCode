@@ -4,7 +4,7 @@
 #include <string.h>
 int main(int argc, char *argv[])
 {
-    struct heap *heap = NULL;
+    struct heap *queue = NULL;
     struct tree *tree = NULL;
     FILE* fl = NULL;
     FILE* comp_fl = NULL;
@@ -12,9 +12,9 @@ int main(int argc, char *argv[])
     char ch = 0x0;
     char wr_ch = 0x0;
     char buf[BUFSIZ];
-    size_t bit_counter = 0;  // Сколько бит записано.
+    char bit_counter = 0;  // Сколько бит записано.
     size_t bit_position = 7; // Первый бит байта, если читать слева.
-    size_t heap_size = 0;   //Чтобы запомнить размер частотного словаря.
+    unsigned int heap_size = 0;   //Чтобы запомнить размер частотного словаря.
 
     if(argc < 3)
     {
@@ -32,19 +32,17 @@ int main(int argc, char *argv[])
         return -3;
     }
 
-    init_heap(&heap);
-
+    init_heap(&queue);
     while(fread(&ch, 1, 1, fl) != 0)
     {
-        insert(&heap, ch);
+        insert(&queue, ch);
     }
 
-    init_tree(&tree, (heap->size) + (heap->size) + 1);
-    heap_size = heap->size;     //Запоминаем размер.
-    fill_tree(&tree, &heap);
+    init_tree(&tree, (queue->size) + (queue->size) + 1);
+    heap_size = queue->size;     //Запоминаем размер.
+    fill_tree(&tree, &queue);
     
     fseek(fl, 0, SEEK_SET);
-
     while(fread(&ch, 1, 1, fl) != 0)
     {
         get_code(tree, ch, buf);
@@ -70,7 +68,6 @@ int main(int argc, char *argv[])
         }
         memset(buf, '\0', BUFSIZ);
     }
-
     // Вот тут дописываем оставшиеся биты
     if(bit_counter > 0)
     {
@@ -79,26 +76,22 @@ int main(int argc, char *argv[])
 
     // Переходим в начало файла.
     // TODO: информация будет затираться, чтобы этого избежать, надо использовать временный файл.
-    fseek(meta_fl, 0, SEEK_SET);
-    
+    fseek(meta_fl, 0, SEEK_SET);    
     // Тут пишем кол-во лишних бит (1 байт)
     if(bit_counter == 0)
     {
-        ch = bit_counter + '0';         // int to char
-        fwrite(&ch, sizeof(ch), 1, meta_fl);
+        fwrite(&bit_counter, sizeof(bit_counter), 1, meta_fl);
     }
     else
     {
         bit_counter = 8 - bit_counter;
-        ch = bit_counter + '0';         // int to char
-        fwrite(&ch, sizeof(ch), 1, meta_fl);
+        fwrite(&bit_counter, sizeof(bit_counter), 1, meta_fl);
     }
     
-    // Пишем длину дерева в файл (3 байта?), предварительно, переведя в строку
-    memset(buf, '\0', BUFSIZ);
-    to_string(buf, 3, heap_size);
-    fwrite(buf, 3, 1, meta_fl);
-    dict_write(tree, meta_fl);
+    // Пишем длину дерева в файл
+    fwrite(&heap_size, sizeof(heap_size), 1, meta_fl);
+    
+    dict_write(tree, meta_fl);  //Записывает всё дерево.
 
     fseek(comp_fl, 0, SEEK_SET);
     while (fread(&ch, 1, 1, comp_fl) != 0)
@@ -109,6 +102,6 @@ int main(int argc, char *argv[])
     fclose(fl);
     free(tree->array);
     free(tree);
-    free(heap->array);
-    free(heap);
+    free(queue->array);
+    free(queue);
 }
