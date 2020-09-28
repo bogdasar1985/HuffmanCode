@@ -93,3 +93,38 @@ void insert_ready_node(struct tree **tree, struct node node)
 	(*tree)->array[(*tree)->size - 1].symbol = node.symbol;
 	(*tree)->array[(*tree)->size - 1].frequency = node.frequency;
 }
+
+struct node *get_symbol(struct tree *tree, char *code)
+{
+	if (tree == NULL || code == NULL)
+	{
+		return NULL;
+	}
+	
+	size_t size = strlen(code);
+	int pos = 0;
+	
+	for(size_t i = 0; i < size; ++i)
+	{
+		if(code[i] == '0')
+		{
+			pos = pos * 2 + 1;
+		}
+		if(code[i] == '1')
+		{
+			pos = pos * 2 + 2;
+		}
+		if((pos-1) > tree->size)
+		{
+			return NULL;
+		}
+	}
+	if(tree->array[pos].symbol == -1)
+	{
+		return NULL;
+	}
+	else
+	{
+		return &(tree->array[pos]);
+	}
+}

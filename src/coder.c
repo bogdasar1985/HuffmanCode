@@ -46,6 +46,11 @@ int main(int argc, char *argv[])
     while(fread(&ch, 1, 1, fl) != 0)
     {
         get_code(tree, ch, buf);
+        #ifdef DEBUG
+        static unsigned long long _number = 0;
+        ++_number;
+        fprintf(stdout, "Log: read symbol №%lld -->%c<-- with ASCII-code %d and Huffman code %s from a file\n", _number, ch, ch, buf);
+        #endif
         for(size_t i = 0; i < strlen(buf); ++i)
         {
             if(buf[i] == '0')

@@ -12,4 +12,6 @@ void get_code(struct tree *queue, char symbol, char *result);
 int dict_write(struct tree *tree, FILE* fl);   // Запись частотного словаря в файл.
 
 void insert_ready_node(struct tree **tree, struct node node);
+
+struct node *get_symbol(struct tree *tree, char *code);
 #endif
