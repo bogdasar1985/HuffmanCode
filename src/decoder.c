@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
         fread(&(tmp.frequency), sizeof(tmp.frequency), 1, fl);
         insert_ready_node(&tree, tmp);
     }
-
+    /***
     #ifdef DEBUG
     fprintf(stdout, "Start logging in get_bit loop.\n");
     fprintf(stdout, "loop counter | bit | is_symbol.\n");
@@ -73,7 +73,31 @@ int main(int argc, char *argv[])
             pos = 0;
         }
     }
-
+    */
+    
+    while(fread(&ch, 1, 1, fl) != 0)
+    {
+        struct node *tmp = NULL;
+        for(int i = CHAR_BIT-1; i >= 0; --i)
+        {
+            // Считываем биты в массив
+            code[pos] = ((ch & (1 << i)) >> i) + '0';
+            ++pos;
+            #ifdef DEBUG
+            fprintf(stdout, "Get bit %d to code. Code is %s\n", code[pos-1], code);
+            #endif
+            if((tmp = get_symbol(tree, code)) != NULL)
+            {
+                #ifdef DEBUG
+                fprintf(stdout, "   Code %s is a symbol -->%c<--\n", code, tmp->symbol);
+                #endif
+                fwrite(&(tmp->symbol), 1, 1, fl_write);
+                memset(code, '\0', CHAR_BIT);
+                pos = 0;
+            }
+        }
+    }
+    
     fclose(fl);
     fclose(fl_write);
 }
