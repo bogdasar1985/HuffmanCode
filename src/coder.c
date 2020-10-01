@@ -66,6 +66,14 @@ int main(int argc, char *argv[])
             if(bit_counter == 8)
             {
                 fwrite(&wr_ch, 1, 1, comp_fl);
+                #ifdef DEBUG
+                fprintf(stdout, "0b");
+                for(int i = CHAR_BIT-1; i >= 0; --i)
+                {
+                    fprintf(stdout, "%c", ((wr_ch & (1 << i)) >> i) + '0');
+                }
+                fprintf(stdout, "%c", '\n');
+                #endif
                 bit_position = 7;
                 bit_counter = 0;
                 wr_ch = 0x0;
@@ -77,6 +85,14 @@ int main(int argc, char *argv[])
     if(bit_counter > 0)
     {
         fwrite(&wr_ch, 1, 1, comp_fl);
+        #ifdef DEBUG
+        fprintf(stdout, "Loss bits: 0b");
+        for(int i = CHAR_BIT-1; i >= 0; --i)
+        {
+            fprintf(stdout, "%c", ((wr_ch & (1 << i)) >> i) + '0');
+        }
+        fprintf(stdout, "%c", '\n');
+        #endif
     }
 
     // Переходим в начало файла.
@@ -86,18 +102,30 @@ int main(int argc, char *argv[])
     if(bit_counter == 0)
     {
         fwrite(&bit_counter, sizeof(bit_counter), 1, meta_fl);
+        #ifdef DEBUG
+        fprintf(stdout, "Loss bits = %d\n", bit_counter);
+        #endif
     }
     else
     {
         bit_counter = 8 - bit_counter;
         fwrite(&bit_counter, sizeof(bit_counter), 1, meta_fl);
+        #ifdef DEBUG
+        fprintf(stdout, "Loss bits = %d\n", bit_counter);
+        #endif
     }
     
     // Пишем длину дерева в файл
     fwrite(&heap_size, sizeof(heap_size), 1, meta_fl);
     
     dict_write(tree, meta_fl);  //Записывает всё дерево.
-
+    #ifdef DEBUG
+    fprintf(stdout, "Tree: \n");
+    for(int i = 0; i < tree->size; ++i)
+    {
+        fprintf(stdout, "%c %d | ", tree->array[i].symbol, tree->array[i].frequency);
+    }
+    #endif
     fseek(comp_fl, 0, SEEK_SET);
     while (fread(&ch, 1, 1, comp_fl) != 0)
     {

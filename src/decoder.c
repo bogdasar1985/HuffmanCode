@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
     fread(&dict_size, sizeof(dict_size), 1, fl);
 
     init_tree(&tree, dict_size + dict_size - 1);
-
     for(unsigned int i = 0; i < dict_size + dict_size - 1; ++i)
     {
         // Вставлять элемент в дерево.
@@ -39,15 +38,34 @@ int main(int argc, char *argv[])
         fread(&(tmp.frequency), sizeof(tmp.frequency), 1, fl);
         insert_ready_node(&tree, tmp);
     }
+    #ifdef DEBUG
+    fprintf(stdout, "Less bits: %d\nDict size: %d\n", less_bits, dict_size);
+    for(int i = 0; i < tree->size; ++i)
+    {
+        fprintf(stdout, "%c %d | ", tree->array[i].symbol, tree->array[i].frequency);
+    }
+    fprintf(stdout, "%c", '\n');
+    #endif
     
     fstat(fileno(fl), &stats);
     for(long j = ftell(fl); j < stats.st_size; ++j)
     {
         struct node *tmp = NULL;
         fread(&ch, 1, 1, fl);
+        #ifdef DEBUG
+        fprintf(stdout, "Read byte: 0b");
+        for(int i = CHAR_BIT - 1; i >= 0; --i)
+        {
+            fprintf(stdout, "%c", ((ch & (1 << i)) >> i) + '0');
+        }
+        fprintf(stdout, "%c", '\n');
+        #endif
         if(j ==  stats.st_size - 1)
         {
-            for(int i = CHAR_BIT-1-less_bits; i >= 0; --i)
+            #ifdef DEBUG
+            fprintf(stdout, "(last)\n");
+            #endif
+            for(int i = CHAR_BIT-1; i >= less_bits; --i)  //Тут проблема
             {
                 // Считываем биты в массив
                 code[pos] = ((ch & (1 << i)) >> i) + '0';
@@ -55,6 +73,9 @@ int main(int argc, char *argv[])
                 if((tmp = get_symbol(tree, code)) != NULL)
                 {
                     fwrite(&(tmp->symbol), 1, 1, fl_write);
+                    #ifdef DEBUG
+                    fprintf(stdout, "Write symbol -->%c<-- with ASCII-code %d and HUffman code %s\n", tmp->symbol, tmp->symbol, code);
+                    #endif
                     memset(code, '\0', CHAR_BIT);
                     pos = 0;
                 }
@@ -70,6 +91,9 @@ int main(int argc, char *argv[])
                 if((tmp = get_symbol(tree, code)) != NULL)
                 {
                     fwrite(&(tmp->symbol), 1, 1, fl_write);
+                    #ifdef DEBUG
+                    fprintf(stdout, "Write symbol -->%c<-- with ASCII-code %d and HUffman code %s\n", tmp->symbol, tmp->symbol, code);
+                    #endif
                     memset(code, '\0', CHAR_BIT);
                     pos = 0;
                 }
