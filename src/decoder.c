@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     char less_bits = 0;
     unsigned int dict_size = 0;
     unsigned int frequency = 0;
-    char ch = 0x0;
+    char ch = '\0';
     char code[CHAR_BIT] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
     size_t pos = 0;
     struct stat stats;

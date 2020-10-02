@@ -8,9 +8,9 @@ int main(int argc, char *argv[])
     struct tree *tree = NULL;
     FILE* fl = NULL;
     FILE* comp_fl = NULL;
-    FILE* meta_fl = fopen(".metainfo.txt", "w+");
-    char ch = 0x0;
-    char wr_ch = 0x0;
+    FILE* meta_fl = NULL;
+    char ch = '\0';
+    char wr_ch = '\0';
     char buf[BUFSIZ];
     char bit_counter = 0;  // Сколько бит записано.
     size_t bit_position = 7; // Первый бит байта, если читать слева.
@@ -19,6 +19,11 @@ int main(int argc, char *argv[])
     if(argc < 3)
     {
         fprintf(stderr, "There are no file and compress file names!\n");
+        return -1;
+    }
+    if((meta_fl = fopen(".metainfo.txt", "w+")) == NULL)
+    {
+        fprintf(stderr, "Can't create result file!\n");
         return -1;
     }
     if((fl = fopen(argv[1], "r+")) == NULL)
@@ -76,7 +81,7 @@ int main(int argc, char *argv[])
                 #endif
                 bit_position = 7;
                 bit_counter = 0;
-                wr_ch = 0x0;
+                wr_ch = '\0';
             }
         }
         memset(buf, '\0', BUFSIZ);
