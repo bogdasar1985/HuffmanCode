@@ -139,6 +139,8 @@ int main(int argc, char *argv[])
     
     remove(".metafile.txt");
     fclose(fl);
+    fclose(meta_fl);
+    fclose(comp_fl);
     free(tree->array);
     free(tree);
     free(queue->array);
