@@ -7,8 +7,8 @@ int main(int argc, char *argv[])
     struct heap *queue = NULL;
     struct tree *tree = NULL;
     FILE* fl = NULL;
-    FILE* comp_fl = NULL;
     FILE* meta_fl = NULL;
+    FILE* comp_fl = NULL;
     char ch = '\0';
     char wr_ch = '\0';
     char buf[BUFSIZ];
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "There are no file and compress file names!\n");
         return -1;
     }
-    if((meta_fl = fopen(".metainfo.txt", "w+")) == NULL)
+    if((comp_fl = fopen(argv[2], "w+")) == NULL)
     {
         fprintf(stderr, "Can't create result file!\n");
         return -1;
@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Wrong file name or program just can't open it!\n");
         return -2;
     }
-    if((comp_fl = fopen(argv[2], "w+")) == NULL)
+    if((meta_fl = fopen(".metafile.txt", "w+")) == NULL)
     {
-        fprintf(stderr, "Can't create a file! Maybe you miss an argument!\n");
+        fprintf(stderr, "Can't create tmp file!\n");
         return -3;
     }
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
             --bit_position;
             if(bit_counter == 8)
             {
-                fwrite(&wr_ch, 1, 1, comp_fl);
+                fwrite(&wr_ch, 1, 1, meta_fl);
                 #ifdef DEBUG
                 fprintf(stdout, "0b");
                 for(int i = CHAR_BIT-1; i >= 0; --i)
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     // Вот тут дописываем оставшиеся биты
     if(bit_counter > 0)
     {
-        fwrite(&wr_ch, 1, 1, comp_fl);
+        fwrite(&wr_ch, 1, 1, meta_fl);
         #ifdef DEBUG
         fprintf(stdout, "Loss bits: 0b");
         for(int i = CHAR_BIT-1; i >= 0; --i)
@@ -102,11 +102,11 @@ int main(int argc, char *argv[])
 
     // Переходим в начало файла.
     // TODO: информация будет затираться, чтобы этого избежать, надо использовать временный файл.
-    fseek(meta_fl, 0, SEEK_SET);    
+    fseek(comp_fl, 0, SEEK_SET);    
     // Тут пишем кол-во лишних бит (1 байт)
     if(bit_counter == 0)
     {
-        fwrite(&bit_counter, sizeof(bit_counter), 1, meta_fl);
+        fwrite(&bit_counter, sizeof(bit_counter), 1, comp_fl);
         #ifdef DEBUG
         fprintf(stdout, "Loss bits = %d\n", bit_counter);
         #endif
@@ -114,16 +114,16 @@ int main(int argc, char *argv[])
     else
     {
         bit_counter = 8 - bit_counter;
-        fwrite(&bit_counter, sizeof(bit_counter), 1, meta_fl);
+        fwrite(&bit_counter, sizeof(bit_counter), 1, comp_fl);
         #ifdef DEBUG
         fprintf(stdout, "Loss bits = %d\n", bit_counter);
         #endif
     }
     
     // Пишем длину дерева в файл
-    fwrite(&heap_size, sizeof(heap_size), 1, meta_fl);
+    fwrite(&heap_size, sizeof(heap_size), 1, comp_fl);
     
-    dict_write(tree, meta_fl);  //Записывает всё дерево.
+    dict_write(tree, comp_fl);  //Записывает всё дерево.
     #ifdef DEBUG
     fprintf(stdout, "Tree: \n");
     for(int i = 0; i < tree->size; ++i)
@@ -131,12 +131,13 @@ int main(int argc, char *argv[])
         fprintf(stdout, "%c %d | ", tree->array[i].symbol, tree->array[i].frequency);
     }
     #endif
-    fseek(comp_fl, 0, SEEK_SET);
-    while (fread(&ch, 1, 1, comp_fl) != 0)
+    fseek(meta_fl, 0, SEEK_SET);
+    while (fread(&ch, 1, 1, meta_fl) != 0)
     {
-        fwrite(&ch, sizeof(ch), 1, meta_fl);
+        fwrite(&ch, sizeof(ch), 1, comp_fl);
     }
     
+    remove(".metafile.txt");
     fclose(fl);
     free(tree->array);
     free(tree);

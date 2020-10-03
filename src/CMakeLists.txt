@@ -6,6 +6,12 @@ set(CMAKE_CXX_FLAGS_DEBUG_INIT "-g3 -Wall -Wextra")
 
 set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall -Wextra")
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "..")
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "..")
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "..")
+
 add_library(utilities SHARED utilities.h utilities.c)
 
 add_library(heap SHARED node.h node.c heap.h heap.c)

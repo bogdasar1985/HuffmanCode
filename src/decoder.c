@@ -101,6 +101,8 @@ int main(int argc, char *argv[])
         }
     }
     
+    free(tree->array);
+    free(tree);
     fclose(fl);
     fclose(fl_write);
 }
