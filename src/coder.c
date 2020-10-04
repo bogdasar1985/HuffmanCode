@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     FILE* comp_fl = NULL;
     char ch = '\0';
     char wr_ch = '\0';
-    char buf[BUFSIZ];
+    char buf[BUFSIZ] = {'\0'};
     char bit_counter = 0;  // Сколько бит записано.
     size_t bit_position = 7; // Первый бит байта, если читать слева.
     unsigned int heap_size = 0;   //Чтобы запомнить размер частотного словаря.
