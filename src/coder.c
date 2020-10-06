@@ -56,7 +56,8 @@ int main(int argc, char *argv[])
         ++_number;
         fprintf(stdout, "Log: read symbol №%lld -->%c<-- with ASCII-code %d and Huffman code %s from a file\n", _number, ch, ch, buf);
         #endif
-        for(size_t i = 0; i < strlen(buf); ++i)
+        size_t size = strlen(buf);
+        for(size_t i = 0; i < size; ++i)
         {
             if(buf[i] == '0')
             {

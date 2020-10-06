@@ -65,9 +65,10 @@ void get_code(struct tree *queue, char symbol, char *result)
 		index = (index - 1) / 2;
 	}
 
-    for(int i = 0; i < (int)strlen(result) / 2; ++i)
+	size_t size = strlen(result);
+    for(size_t i = 0; i < size / 2; ++i)
 	{
-		char_swap((result+i), (result+strlen(result)-i-1));
+		char_swap((result+i), (result+size-i-1));
 	}
 }
 
