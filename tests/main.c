@@ -1,52 +1,119 @@
-// Упорядочить тесты.
-// Создать fixture
-// По-нормальному всё сделать, короче.
 #include <check.h>
 #include "../src/huffman.h"
-START_TEST(_heap)
+// Написать тесты для добавления ноды
+START_TEST(init_priority_queue_test)
 {
-    struct heap *heap = NULL;
-    struct tree *tree = NULL;
-    
-    init_heap(&heap);
-    
-    ck_assert_int_eq(heap->size, 0);
-    ck_assert_int_eq(heap->capacity, 1);
+    struct priority_queue *pq = NULL;
+	ck_assert_int_eq(0, pq_init(&pq, 0));
+	ck_assert_int_eq(pq->size, 0);
+	ck_assert_int_eq(pq->capacity, 0);
+}
+END_TEST
 
-    for(size_t i = 0; i < 3; ++i)
+START_TEST(init2_priority_queue_test)
+{
+    struct priority_queue *pq = NULL;
+	pq_init(&pq, 1);
+	ck_assert_int_eq(pq->size, 0);
+	ck_assert_int_eq(pq->capacity, 1);
+}
+END_TEST
+
+START_TEST(add_priority_queue_test)
+{
+	struct priority_queue *pq = NULL;
+	pq_init(&pq, 5);
+	pq_insert_element(pq, 'a', 1, NULL);
+	ck_assert_int_eq(pq->size, 1);
+	pq_insert_element(pq, 'a', 1, NULL);
+	ck_assert_int_eq(pq->size, 1);
+	pq_insert_element(pq, 'b', 1, NULL);
+	ck_assert_int_eq(pq->size, 2);
+}
+END_TEST
+
+START_TEST(extract_min_test)
+{
+	struct priority_queue *pq = NULL;
+	pq_init(&pq, 5);
+	pq_insert_element(pq, 'a', 1, NULL);
+	pq_insert_element(pq, 'b', 1, NULL);
+	pq_insert_element(pq, 'b', 1, NULL);
+	ck_assert_int_eq('a', pq_extract_min(pq)->symbol);
+	ck_assert_int_eq('b', pq_extract_min(pq)->symbol);
+	ck_assert_int_eq(0, pq->size);
+}
+END_TEST
+
+START_TEST(node_swap_test)
+{
+	struct pq_node *pq = malloc(sizeof(struct pq_node));
+	struct pq_node *pq2 = malloc(sizeof(struct pq_node));
+	pq->symbol = 'a';
+	pq2->symbol = 'b';
+	node_swap(&pq, &pq2);
+	ck_assert_int_eq(pq->symbol, 'b');
+	ck_assert_int_eq(pq2->symbol, 'a');
+}
+END_TEST
+
+START_TEST(find_test)
+{
+	struct priority_queue *pq = NULL;
+	pq_init(&pq, 5);
+	pq_insert_element(pq, 'a', 1, NULL);
+	pq_insert_element(pq, 'b', 1, NULL);
+	pq_insert_element(pq, 'b', 1, NULL);
+	ck_assert_int_ge(pq_find(pq, 'a'), 0);
+	ck_assert_int_ge(pq_find(pq, 'b'), 0);
+	ck_assert_int_eq(pq_find(pq, 'f'), -1);
+}
+END_TEST
+
+START_TEST(build_tree)
+{
+	struct priority_queue *pq = NULL;
+	pq_init(&pq, 1);
+    pq_insert_element(pq, 'a', 51, NULL);
+    pq_insert_element(pq, 'b', 3, NULL);
+    pq_insert_element(pq, 'c', 6, NULL);
+    pq_insert_element(pq, 'd', 12, NULL);
+	pq_insert_element(pq, 'e', 21, NULL);
+	pq_insert_element(pq, 'f', 32, NULL);
+	pq_insert_element(pq, 'g', 44, NULL);
+	while (pq->size > 1)
     {
-        insert(&heap, 'a');
-    }
-    
-    ck_assert_int_eq(heap->size, 1);
-    
-    for(size_t i = 0; i < 2; ++i)
-    {
-        insert(&heap, 'b');
-    }
-    
-    ck_assert_int_eq(heap->size, 2);
+        struct pq_node *tmp1 = pq_extract_min(pq);
+		struct pq_node *tmp2 = pq_extract_min(pq);
+		struct pq_node *tmp3 = tr_build(tmp1, tmp2);
 
-    init_tree(&tree, (heap->size) + (heap->size) + 1);
-    fill_tree(&tree, &heap);
+		ck_assert_ptr_eq(tmp3->left->parent, tmp3);
+		ck_assert_ptr_eq(tmp3->right->parent, tmp3);
 
-    ck_assert_int_eq(tree->size, 3);
+		pq_insert_element(pq, -1, -1, tmp3);
+    }
 }
 END_TEST
 
 int main(void)
 {
-    Suite *s1 = suite_create("Core");       // Что это?
-	TCase *tc1_1 = tcase_create("Core");    // Что это?
-	SRunner *sr = srunner_create(s1);       // Что это?
+	Suite *suite = suite_create("Core");
+	TCase *test_case = tcase_create("Core");
+	SRunner *suite_runner = srunner_create(suite);
 	int nf;
 
-	suite_add_tcase(s1, tc1_1);
-	tcase_add_test(tc1_1, _heap);
+	suite_add_tcase(suite, test_case);
+	tcase_add_test(test_case, init_priority_queue_test);
+	tcase_add_test(test_case, init2_priority_queue_test);
+	tcase_add_test(test_case, add_priority_queue_test);
+	tcase_add_test(test_case, extract_min_test);
+	tcase_add_test(test_case, node_swap_test);
+	tcase_add_test(test_case, find_test);
+	tcase_add_test(test_case, build_tree);
 
-	srunner_run_all(sr, CK_ENV);
-	nf = srunner_ntests_failed(sr);
-	srunner_free(sr);
+	srunner_run_all(suite_runner, CK_ENV);
+	nf = srunner_ntests_failed(suite_runner);
+	srunner_free(suite_runner);
 
 	return nf == 0 ? 0 : 1;
 }
