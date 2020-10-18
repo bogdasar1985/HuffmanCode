@@ -16,8 +16,19 @@ struct priority_queue {
     size_t capacity;
 };
 
-// Return 0 if all is OK, -1 if can't alloc pq and -2 if can't alloc pq->heap_on_array.
+// Return capacity in bytes if all is OK, -1 if can't alloc pq and -2 if can't alloc pq->heap_on_array.
+// Warning: capacity argument is in count of elemennts, NOT BYTES!
 int pq_init(struct priority_queue **pq, size_t capacity);
+
+// Fill the queue, by using string from coded file. size argument is a size of string on bytes(char).
+// Return size if all is OK, -1 if pq is NULL, -2 is str is NULL, 
+// -3 if pq->capacity less than elements in string.
+int pq_fill_from_str(struct priority_queue **pq, char *str, size_t size);
+
+// Fill the queue from another queue and return queue size. 
+// Return -1 if pq is NULL, -2 if pq_initializer is NULL, 
+// -3 if there is not capacity in the queue.
+int pq_fill_from_pq(struct priority_queue **pq, struct priority_queue *pq_intializer);
 
 void shift_up(struct priority_queue *pq, int i);
 

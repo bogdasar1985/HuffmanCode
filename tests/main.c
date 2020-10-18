@@ -95,6 +95,30 @@ START_TEST(build_tree)
 }
 END_TEST
 
+START_TEST(test_pq_fill_from_pq)
+{
+	struct priority_queue *pq1 = NULL;
+	struct priority_queue *pq2 = NULL;
+	pq_init(&pq1, 1);
+    pq_insert_element(pq1, 'a', 51, NULL);
+    pq_insert_element(pq1, 'b', 3, NULL);
+    pq_insert_element(pq1, 'c', 6, NULL);
+    pq_insert_element(pq1, 'd', 12, NULL);
+
+	pq_init(&pq2, pq1->capacity);
+	pq_fill_from_pq(&pq2, pq1);
+
+	ck_assert_int_eq(pq1->size, pq2->size);
+	ck_assert_int_eq(pq1->capacity, pq2->capacity);
+
+	for(size_t i = 0; i < pq1->size; ++i)
+	{
+		ck_assert_int_eq(pq1->heap_on_array[i]->frequency, pq2->heap_on_array[i]->frequency);
+		ck_assert_int_eq(pq1->heap_on_array[i]->symbol, pq2->heap_on_array[i]->symbol);
+	}
+}
+END_TEST
+
 int main(void)
 {
 	Suite *suite = suite_create("Core");
@@ -110,6 +134,7 @@ int main(void)
 	tcase_add_test(test_case, node_swap_test);
 	tcase_add_test(test_case, find_test);
 	tcase_add_test(test_case, build_tree);
+	tcase_add_test(test_case, test_pq_fill_from_pq);
 
 	srunner_run_all(suite_runner, CK_ENV);
 	nf = srunner_ntests_failed(suite_runner);

@@ -20,7 +20,59 @@ int pq_init(struct priority_queue **pq, size_t capacity)
 	
 	(*pq)->capacity = capacity;
 	(*pq)->size = 0;
-	return 0;
+	return (int)(capacity * sizeof(struct pq_node));
+}
+
+int pq_fill_from_str(struct priority_queue **pq, char *str, size_t size)
+{
+	size_t j = 0;
+	if((*pq) == NULL)
+	{
+		return -1;
+	}
+	if(str == NULL)
+	{
+		return -2;
+	}
+	if((*pq)->capacity < size / (sizeof(char) + sizeof(unsigned long)))
+	{
+		return -3;
+	}
+	for(size_t i = 0; i < size / (sizeof(char) + sizeof(unsigned long)); ++i)
+	{
+		(*pq)->heap_on_array[i]->symbol = (char)str[j];
+		j += sizeof(char);
+		(*pq)->heap_on_array[i]->frequency = (unsigned long)str[j];
+		j += sizeof(unsigned long);
+	}
+	return (int)size;
+}
+
+int pq_fill_from_pq(struct priority_queue **pq, struct priority_queue *pq_intializer)
+{
+	if((*pq) == NULL)
+	{
+		return -1;	
+	}
+	if(pq == NULL)
+	{
+		return -2;
+	}
+	if((*pq)->capacity < pq_intializer->size)
+	{
+		return -3;
+	}
+
+	for(size_t i = 0; i < pq_intializer->size; ++i)
+	{
+		(*pq)->heap_on_array[i]->frequency = pq_intializer->heap_on_array[i]->frequency;
+		(*pq)->heap_on_array[i]->left = pq_intializer->heap_on_array[i]->left;
+		(*pq)->heap_on_array[i]->parent = pq_intializer->heap_on_array[i]->parent;
+		(*pq)->heap_on_array[i]->right = pq_intializer->heap_on_array[i]->right;
+		(*pq)->heap_on_array[i]->symbol = pq_intializer->heap_on_array[i]->symbol;
+		(*pq)->size++;
+	}
+	return (int)(pq_intializer->size);
 }
 
 void shift_up(struct priority_queue *pq, int i)
@@ -47,7 +99,7 @@ void shift_down(struct priority_queue *pq, size_t i)
 		{
 			break;
 		}
-		node_swap(&(pq->heap_on_array[i]), &(pq->heap_on_array[j]));	// Тут ошибка.
+		node_swap(&(pq->heap_on_array[i]), &(pq->heap_on_array[j]));
 		i = j;
 	}
 }

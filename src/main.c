@@ -7,8 +7,7 @@ int main()
     struct priority_queue *pq = NULL;
     char code[32] = {'\0'};
     struct pq_node *res = NULL;
-
-    pq_init(&pq, 1);
+    
 
     while (pq->size > 1)
     {
