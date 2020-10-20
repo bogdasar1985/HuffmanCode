@@ -16,6 +16,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "..")
 
 add_library(huffman SHARED huffman.h huffman.c)
 
-add_executable(main main.c)
+add_executable(coder coder.c)
 
-target_link_libraries(main huffman)
+target_link_libraries(coder huffman)
