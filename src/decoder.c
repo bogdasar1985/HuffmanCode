@@ -1,4 +1,7 @@
+#include <sys/stat.h>
+#include <limits.h>
 #include "huffman.h"
+#define CODE_SIZE 256
 int main(int argc, char *argv[])
 {
     FILE *source_fl = NULL;
@@ -7,6 +10,10 @@ int main(int argc, char *argv[])
     char less_bits = 0;
     size_t pq_size = 0;
     char buf[BUFSIZ];
+    char code[CODE_SIZE];
+    struct stat stats;
+    char ch;
+    size_t pos = 0;
 
     source_fl = fopen(argv[1], "r+");
     if(source_fl == NULL)
@@ -25,6 +32,50 @@ int main(int argc, char *argv[])
     fread(&buf, pq_size, sizeof(char) + sizeof(unsigned long), source_fl);
 
     pq_init(&pq, pq_size);
-    pq_fill_from_str(&pq, buf, pq->size);
+    pq_fill_from_str(&pq, buf, pq_size);
+
+    while (pq->size != 1)
+    {
+        struct pq_node *first = pq_extract_min(pq);
+        struct pq_node *second = pq_extract_min(pq);
+        struct pq_node *node = tr_build(first, second);
+        pq_insert_element(pq, -1, 0, node);
+    }
+    /**
+    fstat(fileno(source_fl), &stats);
+    for(size_t i = ftell(source_fl); i < stats.st_size; ++i)
+    {
+        struct pq_node *tmp = NULL;
+        fread(&ch, 1, 1, source_fl);
+        if(i == stats.st_size)
+        {
+            for(int i = CHAR_BIT-1; i >= less_bits; --i)
+            {
+                code[pos] = ((ch & (1 << i)) >> i) + '0';
+                ++pos;
+                if((tmp = get_symbol(pq->heap_on_array[0], code)) != NULL)
+                {
+                    fwrite(&(tmp->symbol), 1, 1, result_fl);
+                    memset(code, '\0', CHAR_BIT);
+                    pos = 0;
+                }
+            }
+        }
+        else
+        {
+            for(int i = CHAR_BIT-1; i >= 0; --i)
+            {
+                code[pos] = ((ch & (1 << i)) >> i) + '0';
+                ++pos;
+                if((tmp = get_symbol(pq->heap_on_array[0], code)) != NULL)
+                {
+                    fwrite(&(tmp->symbol), 1, 1, result_fl);
+                    memset(code, '\0', CHAR_BIT);
+                    pos = 0;
+                }
+            }
+        }       
+    }
+    */
     return 0;
 }

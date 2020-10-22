@@ -34,16 +34,17 @@ int pq_fill_from_str(struct priority_queue **pq, char *str, size_t size)
 	{
 		return -2;
 	}
-	if((*pq)->capacity < size / (sizeof(char) + sizeof(unsigned long)))
+	if((*pq)->capacity < size)
 	{
 		return -3;
 	}
-	for(size_t i = 0; i < size / (sizeof(char) + sizeof(unsigned long)); ++i)
+	for(size_t i = 0; i < size; ++i)
 	{
 		(*pq)->heap_on_array[i]->symbol = (char)str[j];
 		j += sizeof(char);
 		(*pq)->heap_on_array[i]->frequency = (unsigned long)str[j];
 		j += sizeof(unsigned long);
+		(*pq)->size++;
 	}
 	return (int)size;
 }
