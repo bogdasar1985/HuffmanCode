@@ -47,8 +47,11 @@ void node_swap(struct pq_node **first, struct pq_node **second);
 struct pq_node *tr_build(struct pq_node *first, struct pq_node *second);
 
 // Recursive function, that find node with symbol in tree, and save adress of node in `res` argument.
-// If can't find, `res` will not change.(?)
+// If can't find, `res` will not change.(? NULL is better)
+// DANGEROUS: res get a pointer to a part of tree! If res will be free() it's crash a tree.
 void tr_find_symbol(struct pq_node *tree, char symbol, struct pq_node **res);
 
 void tr_get_code(struct pq_node *node, char *result);
+
+void tr_free(struct pq_node *node);
 #endif

@@ -18,4 +18,8 @@ add_library(huffman SHARED huffman.h huffman.c)
 
 add_executable(coder coder.c)
 
+add_executable(decoder decoder.c)
+
 target_link_libraries(coder huffman)
+
+target_link_libraries(decoder huffman)

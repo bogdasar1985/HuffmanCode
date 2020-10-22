@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
     struct priority_queue *pq_tmp = NULL; // Это очередь, из которой мы скопируем её в файл.
     char symbol;
     char bits = '\0';
-    char result[10] = {'\0'};
+    char result[BUFSIZ] = {'\0'};
     char bit_counter = 0;  // Сколько бит записано.
     size_t bit_position = 7; // Первый бит байта, если читать слева.
-    struct pq_node *tmp = malloc(sizeof(struct pq_node));
+    struct pq_node *tmp = NULL;     // Был malloc()
 
     source_fl = fopen(argv[1], "r+");
     if(source_fl == NULL)
@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
         {
             if(result[i] == '0')
             {
-                bits &= ~(1UL << bit_position);
+                bits &= (char)~(1UL << bit_position);
             }
             if(result[i] == '1')
             {
-                bits |= 1UL << bit_position;
+                bits |= (char)(1UL << bit_position);
             }
             ++bit_counter;
             --bit_position;
@@ -73,11 +73,9 @@ int main(int argc, char *argv[])
                 bits = '\0';
             }
         }
-        memset(result, '\0', 10);
+        memset(result, '\0', BUFSIZ);
     }
 
-    //printf("%d\n", 8 - bit_counter);
-    //printf("%ld\n", pq_tmp->size);
     if(bit_counter != 0)
     {
         bit_counter = 8 - bit_counter;
@@ -107,11 +105,11 @@ int main(int argc, char *argv[])
         {
             if(result[i] == '0')
             {
-                bits &= ~(1UL << bit_position);
+                bits &= (char)(~(1UL << bit_position));
             }
             if(result[i] == '1')
             {
-                bits |= 1UL << bit_position;
+                bits |= (char)(1UL << bit_position);
             }
             ++bit_counter;
             --bit_position;
@@ -131,5 +129,11 @@ int main(int argc, char *argv[])
     {
         fwrite(&bits, 1, 1, result_fl);
     }
+
+    fclose(source_fl);
+    fclose(result_fl);
+    tr_free(pq->heap_on_array[0]);
+    // Проблема в том, что при постройке дерева(tr_build), 
+    // ноды дерева пересекаются с нодами очереди, это приводит к невозможности высвобождения.
     return 0;
 }

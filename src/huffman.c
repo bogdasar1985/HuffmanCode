@@ -248,3 +248,13 @@ void tr_get_code(struct pq_node *node, char *result)
 		*(result + pos - i - 1) = tmp;
 	}
 }
+
+void tr_free(struct pq_node *node)
+{
+	if(node != NULL)
+	{
+		tr_free(node->left);
+		tr_free(node->right);
+		free(node);
+	}
+}
