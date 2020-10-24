@@ -41,8 +41,9 @@ int pq_fill_from_str(struct priority_queue **pq, char *str, size_t size)
 	for(size_t i = 0; i < size; ++i)
 	{
 		(*pq)->heap_on_array[i]->symbol = (char)str[j];
+		memcpy(&(*pq)->heap_on_array[i]->symbol, str + j, sizeof((*pq)->heap_on_array[i]->symbol));
 		j += sizeof(char);
-		(*pq)->heap_on_array[i]->frequency = (unsigned long)str[j];
+		memcpy(&(*pq)->heap_on_array[i]->frequency, str + j, sizeof((*pq)->heap_on_array[i]->frequency));
 		j += sizeof(unsigned long);
 		(*pq)->size++;
 	}
@@ -233,11 +234,11 @@ void tr_get_code(struct pq_node *node, char *result)
 		node = node->parent;
 		if(node->left == tmp)
 		{
-			*(result + pos) = '1';
+			*(result + pos) = '0';
 		}
 		else if(node->right == tmp)
 		{
-			*(result + pos) = '0';
+			*(result + pos) = '1';
 		}
 		++pos;
 	}
@@ -258,4 +259,45 @@ void tr_free(struct pq_node *node)
 		tr_free(node->right);
 		free(node);
 	}
+}
+
+struct pq_node *tr_get_symbol(struct pq_node *node, char *code)
+{
+	if(node == NULL || code == NULL)
+	{
+		return NULL;
+	}
+
+	size_t size = strlen(code);
+
+	for(size_t i = 0; i < size; ++i)
+	{
+		if(code[i] == '0')
+		{
+			node = node->left;
+		}
+		if(code[i] == '1')
+		{
+			node = node->right;
+		}
+	}
+
+	return node;
+}
+
+void print_tree(struct pq_node *node)
+{
+	if(node == NULL)
+	{
+		return;
+	}
+	print_tree(node->left);
+	if(node->symbol != -1)
+	{
+		char res[50] = {'\0'};
+		tr_get_code(node, res);
+		printf("%c %s\n", node->symbol, res);
+		memset(res, '\0', 50);
+	}
+	print_tree(node->right);
 }

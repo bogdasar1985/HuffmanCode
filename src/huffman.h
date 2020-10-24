@@ -2,6 +2,7 @@
 #define PRIORITY_QUEUE
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 struct pq_node {
     unsigned long frequency;
     struct pq_node *parent;
@@ -54,4 +55,8 @@ void tr_find_symbol(struct pq_node *tree, char symbol, struct pq_node **res);
 void tr_get_code(struct pq_node *node, char *result);
 
 void tr_free(struct pq_node *node);
+
+struct pq_node *tr_get_symbol(struct pq_node *node, char *code);
+
+void print_tree(struct pq_node *node);
 #endif
