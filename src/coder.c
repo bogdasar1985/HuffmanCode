@@ -16,16 +16,22 @@ int main(int argc, char *argv[])
     size_t bit_position = 7; // Первый бит байта, если читать слева.
     struct pq_node *tmp = NULL;     // Был malloc()
 
+    if(argc < 3)
+    {
+        fprintf(stderr, "Too few arguments!\n");
+        return 1;
+    }
+
     source_fl = fopen(argv[1], "r+");
     if(source_fl == NULL)
     {
-        return -1;
+        return 2;
     }
 
     result_fl = fopen(argv[2], "w+");
     if(result_fl == NULL)
     {
-        return -2;
+        return 3;
     }
 
     pq_init(&pq, 1);

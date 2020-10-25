@@ -16,6 +16,12 @@ int main(int argc, char *argv[])
     char ch;
     size_t pos = 0;
 
+    if(argc < 3)
+    {
+        fprintf(stderr, "Too few arguments!\n");
+        return 1;
+    }
+    
     source_fl = fopen(argv[1], "r+");
     if(source_fl == NULL)
     {
