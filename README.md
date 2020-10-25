@@ -5,7 +5,7 @@ A simple implementation of HuffmanCode
 ```
 git clone github.com/bogdasar1985/HuffmanCode.git
 
-cd HuffmanCode
+cd HuffmanCode/src
 
 mkdir build
 
