@@ -3,7 +3,7 @@ A simple implementation of HuffmanCode
 
 ## How to build
 ```
-git clone github.com/bogdasar1985/HuffmanCode.git
+git clone https://github.com/bogdasar1985/HuffmanCode.git
 
 cd HuffmanCode/src
 
