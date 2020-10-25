@@ -17,8 +17,17 @@ make -j4
 ```
 
 ## How to use
-```bash
+```
 ./coder <decompressed-file> <compressed-file>
 
 ./decoder <compressed-file> <decompressed-file>
+```
+
+## Example
+```
+./coder sample.txt out.txt
+
+./decoder out.txt res.txt
+
+diff sample.txt res.txt   # Should be same
 ```
