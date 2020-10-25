@@ -81,14 +81,14 @@ int main(int argc, char *argv[])
         bit_counter = 8 - bit_counter;
     }
 
-    fwrite(&bit_counter, sizeof(bit_counter), 1, result_fl);   // Запись инфы о лишних битах
-    fwrite(&(pq_tmp->size), sizeof(pq_tmp->size), 1, result_fl); // Запись инфы о длине очереди
+    fwrite(&bit_counter, sizeof(bit_counter), 1, result_fl);   // Writing info about less_bits
+    fwrite(&(pq_tmp->size), sizeof(pq_tmp->size), 1, result_fl); // Writing info about queue size
     
     #ifdef DEBUG
     fprintf(stdout, "bit_counter = %d , pq_size = %ld\n", bit_counter, pq_tmp->size);
     #endif
 
-    // Запись очереди
+    // Queue writing
     #ifdef DEBUG
     fprintf(stdout, "Queue: \n");
     #endif
@@ -107,12 +107,20 @@ int main(int argc, char *argv[])
 
     #ifdef DEBUG
     print_tree(pq->heap_on_array[0]);
+    fprintf(stdout, "\nStart writing...\n");
     #endif
+
     fseek(source_fl, 0, SEEK_SET);
     while(fread(&symbol, 1, 1, source_fl) != 0)
     {
+        #ifdef DEBUG
+        fprintf(stdout, "%c ", symbol);
+        #endif
         tr_find_symbol(pq->heap_on_array[0], symbol, &tmp);
         tr_get_code(tmp, result);
+        #ifdef DEBUG
+        fprintf(stdout, "%s\n", result);
+        #endif
         size_t size = strlen(result);
         for(size_t i = 0; i < size; ++i)
         {
@@ -134,7 +142,7 @@ int main(int argc, char *argv[])
                 bits = '\0';
             }
         }
-        memset(result, '\0', 10);
+        memset(result, '\0', BUFSIZ);
     }
 
     // Записываем оставшиеся биты

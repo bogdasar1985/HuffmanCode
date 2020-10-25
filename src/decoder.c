@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 #include <limits.h>
+#include <assert.h>
 #include "huffman.h"
 #define CODE_SIZE 256
 int main(int argc, char *argv[])
@@ -53,6 +54,7 @@ int main(int argc, char *argv[])
     }
     #ifdef DEBUG
     print_tree(pq->heap_on_array[0]);
+    fprintf(stdout, "\nStart reading...\n");
     #endif 
     fstat(fileno(source_fl), &stats);
     for(long i = ftell(source_fl); i < stats.st_size; ++i)
@@ -64,9 +66,15 @@ int main(int argc, char *argv[])
             for(int i = CHAR_BIT-1; i >= less_bits; --i)
             {
                 code[pos] = ((ch & (1 << i)) >> i) + '0';
+                #ifdef DEBUG
+                fprintf(stdout, "%c", code[pos]);
+                #endif
                 ++pos;
                 if((tmp = tr_get_symbol(pq->heap_on_array[0], code))->symbol != -1)
                 {
+                    #ifdef DEBUG
+                    fprintf(stdout, "\nFind symbol: %c (%s)\n", tmp->symbol, code);
+                    #endif
                     fwrite(&(tmp->symbol), 1, 1, result_fl);
                     memset(code, '\0', CODE_SIZE);
                     pos = 0;
@@ -78,9 +86,15 @@ int main(int argc, char *argv[])
             for(int i = CHAR_BIT-1; i >= 0; --i)
             {
                 code[pos] = ((ch & (1 << i)) >> i) + '0';
+                #ifdef DEBUG
+                fprintf(stdout, "%c", code[pos]);
+                #endif
                 ++pos;
                 if((tmp = tr_get_symbol(pq->heap_on_array[0], code))->symbol != -1)
                 {
+                    #ifdef DEBUG
+                    fprintf(stdout, "\nFind symbol: %c (%s)\n", tmp->symbol, code);
+                    #endif
                     fwrite(&(tmp->symbol), 1, 1, result_fl);
                     memset(code, '\0', CODE_SIZE);
                     pos = 0;

@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS_DEBUG_INIT "-g3 -Wall -Wextra -Wconversion -pedantic")
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wconversion -pedantic")
 
-add_definitions("-Wall -Wextra -Wconversion -pedantic -DDEBUG")
+add_definitions("-Wall -Wextra -Wconversion -pedantic")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "..")
 
