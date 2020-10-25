@@ -40,10 +40,9 @@ int pq_fill_from_str(struct priority_queue **pq, char *str, size_t size)
 	}
 	for(size_t i = 0; i < size; ++i)
 	{
-		(*pq)->heap_on_array[i]->symbol = (char)str[j];
-		memcpy(&(*pq)->heap_on_array[i]->symbol, str + j, sizeof((*pq)->heap_on_array[i]->symbol));
+		(*pq)->heap_on_array[i]->symbol = *(char*)(str + j);
 		j += sizeof(char);
-		memcpy(&(*pq)->heap_on_array[i]->frequency, str + j, sizeof((*pq)->heap_on_array[i]->frequency));
+		(*pq)->heap_on_array[i]->frequency = *(unsigned long*)(str + j);
 		j += sizeof(unsigned long);
 		(*pq)->size++;
 	}
