@@ -56,7 +56,7 @@ void tr_get_code(struct pq_node *node, char *result);
 
 void tr_free(struct pq_node *node);
 
-struct pq_node *tr_get_symbol(struct pq_node *node, char *code);
+struct pq_node *tr_get_symbol(struct pq_node *node, char *code, size_t maxsize);
 
 void print_tree(struct pq_node *node);
 #endif

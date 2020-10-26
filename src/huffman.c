@@ -260,14 +260,14 @@ void tr_free(struct pq_node *node)
 	}
 }
 
-struct pq_node *tr_get_symbol(struct pq_node *node, char *code)
+struct pq_node *tr_get_symbol(struct pq_node *node, char *code, size_t maxsize)
 {
 	if(node == NULL || code == NULL)
 	{
 		return NULL;
 	}
 
-	size_t size = strlen(code);
+	size_t size = strnlen(code, maxsize);
 
 	for(size_t i = 0; i < size; ++i)
 	{

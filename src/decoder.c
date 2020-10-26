@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     struct stat stats;
     char ch;
     size_t pos = 0;
+    size_t tmp_tr_size = 0;     // Переменная для запоминания размера очереди.
 
     if(argc < 3)
     {
@@ -42,7 +43,8 @@ int main(int argc, char *argv[])
     #endif
     pq_init(&pq, pq_size);
     pq_fill_from_str(&pq, buf, pq_size);
-    
+    tmp_tr_size = pq->size;
+
     #ifdef DEBUG
     fprintf(stdout, "Queue: \n");
     for(size_t i = 0; i < pq->size; ++i)
@@ -76,7 +78,7 @@ int main(int argc, char *argv[])
                 fprintf(stdout, "%c", code[pos]);
                 #endif
                 ++pos;
-                if((tmp = tr_get_symbol(pq->heap_on_array[0], code))->symbol != -1)
+                if((tmp = tr_get_symbol(pq->heap_on_array[0], code, CODE_SIZE))->symbol != -1)
                 {
                     #ifdef DEBUG
                     fprintf(stdout, "\nFind symbol: %c (%s)\n", tmp->symbol, code);
@@ -96,7 +98,7 @@ int main(int argc, char *argv[])
                 fprintf(stdout, "%c", code[pos]);
                 #endif
                 ++pos;
-                if((tmp = tr_get_symbol(pq->heap_on_array[0], code))->symbol != -1)
+                if((tmp = tr_get_symbol(pq->heap_on_array[0], code, CODE_SIZE))->symbol != -1)
                 {
                     #ifdef DEBUG
                     fprintf(stdout, "\nFind symbol: %c (%s)\n", tmp->symbol, code);
@@ -109,5 +111,15 @@ int main(int argc, char *argv[])
         }       
     }
 
+    fclose(source_fl);
+    fclose(result_fl);
+    tr_free(pq->heap_on_array[0]);
+
+    for(size_t i = pq->capacity - 1; i > tmp_tr_size-1; --i)
+    {
+        free(pq->heap_on_array[i]);
+    }
+    free(pq->heap_on_array);
+    free(pq);
     return 0;
 }
