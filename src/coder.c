@@ -159,7 +159,13 @@ int main(int argc, char *argv[])
 
     fclose(source_fl);
     fclose(result_fl);
-    tr_free(pq->heap_on_array[0]);
+    //tr_free(pq->heap_on_array[0]);
+    for(size_t i = 0; i < pq->capacity; ++i)
+    {
+        free(pq->heap_on_array[i]);
+    }
+    free(pq->heap_on_array);
+    free(pq);
     // Проблема в том, что при постройке дерева(tr_build), 
     // ноды дерева пересекаются с нодами очереди, это приводит к невозможности высвобождения.
     return 0;
