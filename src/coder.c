@@ -14,7 +14,8 @@ int main(int argc, char *argv[])
     char result[BUFSIZ] = {'\0'};
     char bit_counter = 0;  // Сколько бит записано.
     size_t bit_position = 7; // Первый бит байта, если читать слева.
-    struct pq_node *tmp = NULL;     // Был malloc()
+    struct pq_node *tmp = NULL; 
+    size_t tmp_tr_size = 0;     // Переменная для запоминания размера очереди.
 
     if(argc < 3)
     {
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     // Копирование очереди.
     pq_init(&pq_tmp, pq->size);
     pq_fill_from_pq(&pq_tmp, pq);
+    tmp_tr_size = pq->size;
 
     while (pq->size != 1)
     {
@@ -159,14 +161,21 @@ int main(int argc, char *argv[])
 
     fclose(source_fl);
     fclose(result_fl);
-    //tr_free(pq->heap_on_array[0]);
-    for(size_t i = 0; i < pq->capacity; ++i)
+    tr_free(pq->heap_on_array[0]);
+
+    for(size_t i = pq->capacity - 1; i > tmp_tr_size-1; --i)
     {
         free(pq->heap_on_array[i]);
     }
     free(pq->heap_on_array);
     free(pq);
-    // Проблема в том, что при постройке дерева(tr_build), 
-    // ноды дерева пересекаются с нодами очереди, это приводит к невозможности высвобождения.
+
+    for(size_t i = pq_tmp->capacity - 1; i > 0; --i)
+    {
+        free(pq_tmp->heap_on_array[i]);
+    }
+    free(*(pq_tmp->heap_on_array));
+    free(pq_tmp->heap_on_array);
+    free(pq_tmp);
     return 0;
 }
