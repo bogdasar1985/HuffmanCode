@@ -38,20 +38,9 @@ int main(int argc, char *argv[])
     fread(&less_bits, sizeof(char), 1, source_fl);
     fread(&pq_size, sizeof(pq_size), 1, source_fl);
     fread(&buf, pq_size, sizeof(char) + sizeof(unsigned long), source_fl);
-    #ifdef DEBUG
-    fprintf(stdout, "less_bits = %d , pq_size = %ld\n", less_bits, pq_size);
-    #endif
     pq_init(&pq, pq_size);
     pq_fill_from_str(&pq, buf, pq_size);
     tmp_tr_size = pq->size;
-
-    #ifdef DEBUG
-    fprintf(stdout, "Queue: \n");
-    for(size_t i = 0; i < pq->size; ++i)
-    {
-        fprintf(stdout, "Queue[%ld]: %c %ld\n", i, pq->heap_on_array[i]->symbol, pq->heap_on_array[i]->frequency);
-    }
-    #endif
     
     while (pq->size != 1)
     {
@@ -60,10 +49,7 @@ int main(int argc, char *argv[])
         struct pq_node *node = tr_build(first, second);
         pq_insert_element(pq, -1, 0, node);
     }
-    #ifdef DEBUG
-    print_tree(pq->heap_on_array[0]);
-    fprintf(stdout, "\nStart reading...\n");
-    #endif 
+
     fstat(fileno(source_fl), &stats);
     for(long i = ftell(source_fl); i < stats.st_size; ++i)
     {
@@ -74,15 +60,9 @@ int main(int argc, char *argv[])
             for(int i = CHAR_BIT-1; i >= less_bits; --i)
             {
                 code[pos] = ((ch & (1 << i)) >> i) + '0';
-                #ifdef DEBUG
-                fprintf(stdout, "%c", code[pos]);
-                #endif
                 ++pos;
                 if((tmp = tr_get_symbol(pq->heap_on_array[0], code, CODE_SIZE))->symbol != -1)
                 {
-                    #ifdef DEBUG
-                    fprintf(stdout, "\nFind symbol: %c (%s)\n", tmp->symbol, code);
-                    #endif
                     fwrite(&(tmp->symbol), 1, 1, result_fl);
                     memset(code, '\0', CODE_SIZE);
                     pos = 0;
@@ -94,15 +74,9 @@ int main(int argc, char *argv[])
             for(int i = CHAR_BIT-1; i >= 0; --i)
             {
                 code[pos] = ((ch & (1 << i)) >> i) + '0';
-                #ifdef DEBUG
-                fprintf(stdout, "%c", code[pos]);
-                #endif
                 ++pos;
                 if((tmp = tr_get_symbol(pq->heap_on_array[0], code, CODE_SIZE))->symbol != -1)
                 {
-                    #ifdef DEBUG
-                    fprintf(stdout, "\nFind symbol: %c (%s)\n", tmp->symbol, code);
-                    #endif
                     fwrite(&(tmp->symbol), 1, 1, result_fl);
                     memset(code, '\0', CODE_SIZE);
                     pos = 0;
