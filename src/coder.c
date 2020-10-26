@@ -1,4 +1,3 @@
-// Надо делать в 2 прохода, на первом получаем метаинформацию, на втором пишем в файл.
 #include "huffman.h"
 #include <stdio.h>
 #include <string.h>
@@ -8,14 +7,14 @@ int main(int argc, char *argv[])
     FILE *source_fl = NULL;
     FILE *result_fl = NULL;
     struct priority_queue *pq = NULL;
-    struct priority_queue *pq_tmp = NULL; // Это очередь, из которой мы скопируем её в файл.
+    struct priority_queue *pq_tmp = NULL;
     char symbol;
     char bits = '\0';
     char result[BUFSIZ] = {'\0'};
-    char bit_counter = 0;  // Сколько бит записано.
-    size_t bit_position = 7; // Первый бит байта, если читать слева.
+    char bit_counter = 0;
+    size_t bit_position = 7;
     struct pq_node *tmp = NULL; 
-    size_t tmp_tr_size = 0;     // Переменная для запоминания размера очереди.
+    size_t tmp_tr_size = 0;     // Remember the queue size. (That is for free memory. :-/)
 
     if(argc < 3)
     {
@@ -42,7 +41,6 @@ int main(int argc, char *argv[])
         pq_insert_element(pq, symbol, 1, NULL);
     }
 
-    // Копирование очереди.
     pq_init(&pq_tmp, pq->size);
     pq_fill_from_pq(&pq_tmp, pq);
     tmp_tr_size = pq->size;
@@ -55,7 +53,7 @@ int main(int argc, char *argv[])
         pq_insert_element(pq, -1, 0, node);
     }
 
-    // Это холостой проход, он ничего не записывает. Тут мы получаем кол-во лишних бит(bit_counter).
+    // On this pass, we do not write anything, we just get the number of extra bits.
     fseek(source_fl, 0, SEEK_SET);
     while(fread(&symbol, 1, 1, source_fl) != 0)
     {
@@ -153,7 +151,7 @@ int main(int argc, char *argv[])
         memset(result, '\0', BUFSIZ);
     }
 
-    // Записываем оставшиеся биты
+    // Writing extra bits
     if(bit_counter > 0)
     {
         fwrite(&bits, 1, 1, result_fl);

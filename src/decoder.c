@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     struct stat stats;
     char ch;
     size_t pos = 0;
-    size_t tmp_tr_size = 0;     // Переменная для запоминания размера очереди.
+    size_t tmp_tr_size = 0;     // Remember the queue_size. (That is for free memory. :-/)
 
     if(argc < 3)
     {
