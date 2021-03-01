@@ -139,7 +139,9 @@ int pq_insert_element(struct priority_queue *pq, char symbol, unsigned long freq
 
     if(pq->size == pq->capacity)
 	{
-		pq->heap_on_array = reallocarray(pq->heap_on_array, pq->size * 2, sizeof(struct pq_node*));
+		// Something wrong in this place!
+		//pq->heap_on_array = reallocarray(pq->heap_on_array, pq->size * 2, sizeof(struct pq_node*));
+		pq->heap_on_array = realloc(pq->heap_on_array, pq->size * 2 * sizeof(struct pq_node*));
 		if(pq->heap_on_array == NULL)
 		{
 			return -1;
